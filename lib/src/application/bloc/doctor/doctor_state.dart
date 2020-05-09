@@ -15,11 +15,11 @@ class DoctorsLoading extends DoctorState{}
 
 class DoctorsLoaded extends DoctorState {
 
-  final List<Doctor> doctor;
+  final List<Doctor> doctors;
 
-  DoctorsLoaded({@required this.doctor}) : assert(doctor != null);
+  DoctorsLoaded({@required this.doctors}) : assert(doctors != null);
 
-  List<Object> get props => [doctor];
+  List<Object> get props => [doctors];
 }
 
 class DoctorLoaded extends DoctorState {
