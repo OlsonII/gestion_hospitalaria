@@ -39,8 +39,8 @@ class MedicalAppointment implements IMedicalService{
 
   factory MedicalAppointment.fromJson(Map<String, dynamic> json) => MedicalAppointment(
     id: json["id"],
-    doctor: json["doctor"],
-    patient: json["patient"],
+    doctor: Doctor.fromJson(json["doctor"]),
+    patient: Patient.fromJson(json["patient"]),
     date: DateTime.parse(json["date"]),
     hour: DateTime.parse(json["hour"]),
     state: json["state"],

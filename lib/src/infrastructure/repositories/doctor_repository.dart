@@ -4,7 +4,8 @@ import 'package:gestion_hospitalaria/src/domain/entities/doctor.dart';
 import 'package:http/http.dart' as http;
 
 class DoctorRepository {
-  static const String _URL = 'http://192.168.0.28:5000/medicalservice/doctor';
+
+  static const String _URL = 'http://192.168.0.28:5000/medicalService/Patient';
 
   Future<List<Doctor>> getAllDoctors() async {
     try{
@@ -35,10 +36,15 @@ class DoctorRepository {
     }
   }
 
-  Future<bool> createDoctor(Doctor doctor) async{
-    return await http.post(_URL, headers: {'content-type': 'application/json'}, body: doctorToJson(doctor))
-        .then((response) => true)
-        .catchError((onError) => onError);
+  Future<String> createDoctor(Doctor doctor) async{
+    print(doctorToJson(doctor));
+    return await http.post(_URL, headers: {'Content-Type': 'application/json', 'accept': 'text/plain'},
+        body: doctorToJson(doctor)
+    ).then((response) {
+      return jsonDecode(response.body)['mensaje'];
+    }).catchError((onError) {
+      print('error: ${onError}');
+    });
   }
 
 }

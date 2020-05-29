@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestion_hospitalaria/src/presentation/pages/dashboard_page.dart';
 import 'package:gestion_hospitalaria/src/presentation/pages/doctors_page.dart';
@@ -11,6 +12,8 @@ class HomePage extends StatefulWidget{
 
   @override
   _HomePageState createState() => _HomePageState();
+
+  static GlobalKey scaffoldKey = new GlobalKey();
 
 }
 
@@ -25,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   Color _textColor = Color.fromRGBO(27, 26, 41, 1);
   Color _iconColor = Color.fromRGBO(55, 104, 242, 0.5);
   Color _unSelectedTextColor = Color.fromRGBO(193, 192, 198, 1);
+
   List<Widget> _pages = [
     DashboardPage(),
     MedicalAppointmentsPage(),
@@ -41,6 +45,7 @@ class _HomePageState extends State<HomePage> {
     _screenHeight = _screenSize.height;
 
     return Scaffold(
+        key: HomePage.scaffoldKey,
         body: Stack(
           children: <Widget>[
             Container(
@@ -56,9 +61,10 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                          borderRadius: _screenWidth < 700 ?
-                          BorderRadius.all(_standarRadius) :
-                          BorderRadius.only(topRight: _standarRadius, bottomRight: _standarRadius),
+                          borderRadius: BorderRadius.only(
+                              topRight: _standarRadius,
+                              bottomRight: _standarRadius
+                          ),
                           color: Color.fromRGBO(246, 245, 253, 1)
                       ),
                       child: Column(
@@ -77,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -86,12 +92,82 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Container _buildMenu() {
+  Widget _buildMenu() {
     return _screenWidth < 700 ?
-        Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(topLeft: _standarRadius, bottomLeft: _standarRadius),
-              color: Colors.white
+    Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(topLeft: _standarRadius, bottomLeft: _standarRadius),
+        color: Colors.white,
+      ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FlatButton(
+                child: Row(
+                  children: <Widget>[
+                    FaIcon(FontAwesomeIcons.chartLine, color: _selectedPage == 0 ? _iconColor : _unSelectedTextColor),
+                  ],
+                ),
+                onPressed: (){
+                  setState(() {
+                    _selectedPage = 0;
+                    _title = 'Tablero';
+                  });
+                },
+              ),
+              FlatButton(
+                child: Row(
+                  children: <Widget>[
+                    FaIcon(FontAwesomeIcons.notesMedical, color: _selectedPage == 1 ? _iconColor : _unSelectedTextColor),
+                  ],
+                ),
+                onPressed: (){
+                  setState(() {
+                    _selectedPage = 1;
+                    _title = 'Citas Medicas';
+                  });
+                },
+              ),
+              FlatButton(
+                child: Row(
+                  children: <Widget>[
+                    FaIcon(FontAwesomeIcons.syringe, color: _selectedPage == 2 ? _iconColor : _unSelectedTextColor),
+                  ],
+                ),
+                onPressed: (){
+                  setState(() {
+                    _selectedPage = 2;
+                    _title = 'Examenes';
+                  });
+                },
+              ),
+              FlatButton(
+                child: Row(
+                  children: <Widget>[
+                    FaIcon(FontAwesomeIcons.userMd, color: _selectedPage == 3 ? _iconColor : _unSelectedTextColor),
+                  ],
+                ),
+                onPressed: (){
+                  setState(() {
+                    _selectedPage = 3;
+                    _title = 'Doctores';
+                  });
+                },
+              ),
+              FlatButton(
+                child: Row(
+                  children: <Widget>[
+                    FaIcon(FontAwesomeIcons.userAlt, color: _selectedPage == 4 ? _iconColor : _unSelectedTextColor),
+                  ],
+                ),
+                onPressed: (){
+                  setState(() {
+                    _selectedPage = 4;
+                    _title = 'Pacientes';
+                  });
+                },
+              )
+            ],
           ),
         ) :
     Container(
@@ -178,7 +254,8 @@ class _HomePageState extends State<HomePage> {
                 FaIcon(FontAwesomeIcons.userAlt, color: _selectedPage == 4 ? _iconColor : _unSelectedTextColor),
                 Expanded(child: Container()),
                 Text('Pacientes', style: TextStyle(fontSize: 17.0, color: _selectedPage == 4 ? _textColor : _unSelectedTextColor)),
-                Expanded(child: Container()),
+                Expanded(child: Container()
+                ),
               ],
             ),
             onPressed: (){

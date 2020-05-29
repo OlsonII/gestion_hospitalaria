@@ -14,11 +14,11 @@ class MedicalAppointmentsLoading extends MedicalAppointmentState{}
 
 class MedicalAppointmentsLoaded extends MedicalAppointmentState {
 
-  final List<MedicalAppointment> medicalAppointment;
+  final List<MedicalAppointment> medicalAppointments;
 
-  MedicalAppointmentsLoaded({@required this.medicalAppointment}) : assert(medicalAppointment != null);
+  MedicalAppointmentsLoaded({@required this.medicalAppointments}) : assert(medicalAppointments != null);
 
-  List<Object> get props => [medicalAppointment];
+  List<Object> get props => [medicalAppointments];
 }
 
 class MedicalAppointmentLoaded extends MedicalAppointmentState {

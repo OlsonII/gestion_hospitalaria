@@ -13,6 +13,15 @@ class DoctorsEmpty extends DoctorState{
 
 class DoctorsLoading extends DoctorState{}
 
+class DoctorsRegistered extends DoctorState {
+
+  final String response;
+
+  DoctorsRegistered({@required this.response}) : assert(response != null);
+
+  List<Object> get props => [response];
+}
+
 class DoctorsLoaded extends DoctorState {
 
   final List<Doctor> doctors;

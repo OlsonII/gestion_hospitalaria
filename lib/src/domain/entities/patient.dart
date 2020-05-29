@@ -15,7 +15,7 @@ class Patient extends Person {
   String gender;
   String eps;
   int stratum;
-  int discount;
+  double discount;
 
   Patient({
     this.id,

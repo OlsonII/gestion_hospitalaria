@@ -2,8 +2,8 @@
 
 import 'dart:async';
 
-import 'package:gestion_hospitalaria/src/domain/entities/doctor.dart';
 import 'package:gestion_hospitalaria/src/infrastructure/repositories/doctor_repository.dart';
+import 'package:gestion_hospitalaria/src/presentation/forms/doctor_form.dart';
 import 'doctor_event.dart';
 import 'doctor_state.dart';
 
@@ -31,6 +31,11 @@ class DoctorBloc{
       _doctorOutput.add(DoctorLoaded(doctor: await _doctorRepository.getSpecifyDoctor(event.doctor.id)));
     }else if(event is SearchAllDoctors){
       _doctorOutput.add(DoctorsLoaded(doctors: await _doctorRepository.getAllDoctors()));
+    }else if(event is CreateDoctor){
+      var response = await _doctorRepository.createDoctor(event.doctor);
+      DoctorForm.response = response;
+      print('doctorForm response: ${DoctorForm.response}');
+      _doctorOutput.add(DoctorsRegistered(response: response));
     }
   }
 }
