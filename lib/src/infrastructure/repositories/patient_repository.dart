@@ -11,16 +11,16 @@ class PatientRepository{
     try{
       var response = await http.get(_URL);
       var decodedData = jsonDecode(response.body)["patients"];
-      final List<Patient> doctors = new List();
+      final List<Patient> patients = new List();
 
       if(decodedData == null) return [];
 
       decodedData.forEach((patient){
-        var doctorTemporal = Patient.fromJson(patient);
-        doctors.add(doctorTemporal);
+        var patientTemporal = Patient.fromJson(patient);
+        patients.add(patientTemporal);
       });
 
-      return doctors;
+      return patients;
     }catch(e){
       print(e);
     }
@@ -37,10 +37,14 @@ class PatientRepository{
   }
 
   Future<String> createPatient(Patient patient) async{
+    var pat = patientToJson(patient);
+    print(pat);
     return await http.post(_URL, headers: {'Content-Type': 'application/json', 'accept': 'text/plain'},
         body: patientToJson(patient)
     ).then((response) {
-      return jsonDecode(response.body)['mensaje'];
+      var res = jsonDecode(response.body)['mensaje'];
+      print('response repository: $res');
+      return res;
     }).catchError((onError) {
       print('error: $onError');
     });

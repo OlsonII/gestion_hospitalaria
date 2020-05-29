@@ -7,11 +7,11 @@ abstract class DoctorEvent extends Equatable{
   const DoctorEvent();
 }
 
-class CreateDoctor extends DoctorEvent {
+class registerDoctor extends DoctorEvent {
 
   final Doctor doctor;
 
-  const CreateDoctor({@required this.doctor}) : assert(doctor != null);
+  const registerDoctor({@required this.doctor}) : assert(doctor != null);
 
   @override
   List<Object> get props => [doctor];

@@ -40,13 +40,12 @@ class Patient extends Person {
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
+    "identification": id,
     "name": name,
     "surname": surname,
     "age": age,
     "gender": gender,
     "eps": eps,
-    "stratum": stratum,
-    "discount": discount,
+    "stratum": stratum
   };
 }

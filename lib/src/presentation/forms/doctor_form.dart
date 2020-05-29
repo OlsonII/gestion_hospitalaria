@@ -118,7 +118,7 @@ class _DoctorFormState extends State<DoctorForm> {
               FlatButton(
                 child: Text('Registrar'),
                 onPressed: (){
-                  doctorBloc.sendDoctorEvent.add(CreateDoctor(doctor: DoctorForm.doctor));
+                  doctorBloc.sendDoctorEvent.add(registerDoctor(doctor: DoctorForm.doctor));
                   Navigator.of(context).pop();
                   _showResponse();
                 },
@@ -134,9 +134,11 @@ class _DoctorFormState extends State<DoctorForm> {
       if(element is DoctorsRegistered){
         if(element.response == 'Doctor registrado satisfactoriamente'){
           DoctorForm.formDoctorKey.currentState.reset();
+          _registeredDoctorDialog(HomePage.scaffoldKey.currentContext, element.response);
+          return true;
         }
-        _registeredDoctorDialog(HomePage.scaffoldKey.currentContext, element.response);
       }
+      return false;
     });
   }
 

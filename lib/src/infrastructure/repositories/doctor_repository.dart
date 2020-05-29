@@ -36,7 +36,7 @@ class DoctorRepository {
     }
   }
 
-  Future<String> createDoctor(Doctor doctor) async{
+  Future<String> registerDoctor(Doctor doctor) async{
     print(doctorToJson(doctor));
     return await http.post(_URL, headers: {'Content-Type': 'application/json', 'accept': 'text/plain'},
         body: doctorToJson(doctor)

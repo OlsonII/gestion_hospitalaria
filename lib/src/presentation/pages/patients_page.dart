@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gestion_hospitalaria/src/application/bloc/patient/patient_bloc.dart';
+import 'package:gestion_hospitalaria/src/application/bloc/patient/patient_event.dart';
+import 'package:gestion_hospitalaria/src/application/bloc/patient/patient_state.dart';
+import 'package:gestion_hospitalaria/src/domain/entities/patient.dart';
 import 'package:gestion_hospitalaria/src/presentation/forms/patient_form.dart';
 import 'package:gestion_hospitalaria/src/presentation/loaders/color_progress_indicator.dart';
 
@@ -24,6 +28,8 @@ class _PatientsPageState extends State<PatientsPage> {
   @override
   Widget build(BuildContext context) {
 
+    patientBloc.sendPatientEvent.add(SearchAllPatients());
+
     _screenSize = MediaQuery.of(context).size;
     _screenWidth = _screenSize.width;
     _screenHeight = _screenSize.height;
@@ -41,85 +47,83 @@ class _PatientsPageState extends State<PatientsPage> {
         ],
       ),
     );
-
   }
 
   Row _buildButtons() {
     return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(_standarRadius),
-                  color: Color.fromRGBO(78, 76, 173, 1)
-              ),
-              child: FlatButton(
-                child: Text(_screenLow ? 'Registrar' : 'Registrar paciente', style: TextStyle(fontSize: 17.0, color: Colors.white)),
-                onPressed: (){
-                  setState(() {
-                    _register = !_register;
-                  });
-                },
-              ),
-            ),
-            SizedBox(
-              width: _screenWidth*0.05,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(_standarRadius),
-                  color: Color.fromRGBO(251, 139, 142, 1)
-              ),
-              child: FlatButton(
-                child: Text(_screenLow ? 'Modificar' :'Modificar paciente', style: TextStyle(fontSize: 17.0, color: Colors.white),),
-                onPressed: (){},
-              ),
-            ),
-          ],
-        );
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(_standarRadius),
+              color: Color.fromRGBO(78, 76, 173, 1)
+          ),
+          child: FlatButton(
+            child: Text(_screenLow ? 'Registrar' : 'Registrar paciente', style: TextStyle(fontSize: 17.0, color: Colors.white)),
+            onPressed: (){
+              setState(() {
+                _register = !_register;
+              });
+            },
+          ),
+        ),
+        SizedBox(
+          width: _screenWidth*0.05,
+        ),
+        Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(_standarRadius),
+              color: Color.fromRGBO(251, 139, 142, 1)
+          ),
+          child: FlatButton(
+            child: Text(_screenLow ? 'Modificar' :'Modificar paciente', style: TextStyle(fontSize: 17.0, color: Colors.white),),
+            onPressed: (){},
+          ),
+        ),
+      ],
+    );
   }
 
   Container _buildPatientsContainer() {
     return Container(
-              height: 100,
-              margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(_standarRadius),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color.fromRGBO(0, 0, 0, 0.07),
-                    spreadRadius: 1,
-                    blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Center(child: ColorProgressIndicator(color1: Color.fromRGBO(251, 139, 142, 1), color2: Color.fromRGBO(55, 104, 242, 0.5), color3: Color.fromRGBO(78, 76, 173, 1),))
-              /*child: StreamBuilder(
-                stream: doctorBloc.doctorStream,
-                initialData: [],
-                builder: (context, snapshot){
-                  if(snapshot.data is DoctorsLoaded){
-                    return ListView.builder(
-                        itemCount: snapshot.data.doctors.length,
-                        itemBuilder: (context, item) => _createItemList(context, snapshot.data.doctors[item])
-                    );
-                  }
-                  else{
-                    return Center(child: CircularProgressIndicator());
-                  }
-                },
-              )*/
-          );
+        height: 100,
+        margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(_standarRadius),
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(0, 0, 0, 0.07),
+              spreadRadius: 1,
+              blurRadius: 7,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: StreamBuilder(
+          stream: patientBloc.patientStream,
+          initialData: [],
+          builder: (context, snapshot){
+            if(snapshot.data is PatientsLoaded){
+              return ListView.builder(
+                  itemCount: snapshot.data.patients.length,
+                  itemBuilder: (context, item) => _createItemList(context, snapshot.data.patients[item])
+              );
+            }
+            else{
+              return Center(child: ColorProgressIndicator(color1: Color.fromRGBO(251, 139, 142, 1), color2: Color.fromRGBO(55, 104, 242, 0.5), color3: Color.fromRGBO(78, 76, 173, 1),));
+            }
+          },
+        )
+    );
   }
 
-  _createItemList(BuildContext context, doctor) {
+  _createItemList(BuildContext context, Patient patient) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.0),
       child: ListTile(
-        title: Text(doctor.name),
-        subtitle: Text('${doctor.degree} - ${doctor.workday}'),
+        title: Text('${patient.name} ${patient.surname}'),
+        subtitle: Text('Estrato: ${patient.stratum} - ${patient.eps}'),
       ),
     );
   }
@@ -136,7 +140,8 @@ class _PatientsPageState extends State<PatientsPage> {
               style: TextStyle(fontSize: 17.0, color: Colors.white)),
           onPressed: (){
             setState(() {
-              _register = !_register;
+//              _register = !_register;
+              PatientForm().submitForm(context);
             });
           },
         ),
