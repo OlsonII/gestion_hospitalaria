@@ -174,7 +174,7 @@ class _PatientFormState extends State<PatientForm> {
           keyboardType: TextInputType.number,
           validator: (value) => _validateIdentification(value) ,
           onChanged: (value) {
-            PatientForm.patient.id = value;
+            PatientForm.patient.identification = value;
           }
       ),
     );
@@ -258,9 +258,9 @@ class _PatientFormState extends State<PatientForm> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          FaIcon(FontAwesomeIcons.venusMars),
+          FaIcon(FontAwesomeIcons.venusMars, color: Color.fromRGBO(140, 140, 140, 1)),
           SizedBox(width: _screenWidth*0.03,),
-          Text('Genero'),
+          Text('Genero', style: TextStyle(color: Color.fromRGBO(140, 140, 140, 1))),
           SizedBox(width: _screenWidth*0.03,),
           DropdownButton(
             value: _dropdownGender,
@@ -274,7 +274,7 @@ class _PatientFormState extends State<PatientForm> {
             items: ['No especificado', 'Masculino', 'Femenino'].map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value),
+                child: Text(value, style: TextStyle(color: Color.fromRGBO(140, 140, 140, 1))),
               );
             }).toList(),
           )
@@ -293,7 +293,7 @@ class _PatientFormState extends State<PatientForm> {
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
-            icon: FaIcon(FontAwesomeIcons.solidIdCard),
+            icon: FaIcon(FontAwesomeIcons.bookMedical),
             labelText: 'EPS*',
             hintText: 'Ingrese el nombre de la EPS aqui',
           ),
@@ -313,7 +313,7 @@ class _PatientFormState extends State<PatientForm> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          FaIcon(FontAwesomeIcons.venusMars),
+          FaIcon(FontAwesomeIcons.sortNumericUpAlt, color: Color.fromRGBO(140, 140, 140, 1),),
           SizedBox(width: _screenWidth*0.03,),
           Text('Estrato'),
           SizedBox(width: _screenWidth*0.03,),

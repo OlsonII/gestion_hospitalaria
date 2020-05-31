@@ -8,7 +8,7 @@ String doctorToJson(Doctor data) => json.encode(data.toJson());
 
 class Doctor extends Person {
 
-  String id;
+  String identification;
   String name;
   String surname;
   int age;
@@ -18,7 +18,7 @@ class Doctor extends Person {
   String workday;
 
   Doctor({
-    this.id,
+    this.identification,
     this.name,
     this.surname,
     this.age,
@@ -29,7 +29,7 @@ class Doctor extends Person {
   });
 
   factory Doctor.fromJson(Map<String, dynamic> json) => Doctor(
-    id: json["id"],
+    identification: json["id"],
     name: json["name"],
     surname: json["surname"],
     age: json["age"],
@@ -40,7 +40,7 @@ class Doctor extends Person {
   );
 
   Map<String, dynamic> toJson() => {
-    "identification": id,
+    "identification": identification,
     "name": name,
     "surname": surname,
     "age": age,

@@ -7,11 +7,11 @@ abstract class MedicalAppointmentEvent extends Equatable{
   const MedicalAppointmentEvent();
 }
 
-class CreateMedicalAppointmentEvent extends MedicalAppointmentEvent {
+class RegisterMedicalAppointmentEvent extends MedicalAppointmentEvent {
 
   final MedicalAppointment medicalAppointment;
 
-  const CreateMedicalAppointmentEvent({@required this.medicalAppointment}) : assert(medicalAppointment != null);
+  const RegisterMedicalAppointmentEvent({@required this.medicalAppointment}) : assert(medicalAppointment != null);
 
   @override
   List<Object> get props => [medicalAppointment];

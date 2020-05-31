@@ -30,4 +30,13 @@ class MedicalAppointmentLoaded extends MedicalAppointmentState {
   List<Object> get props => [medicalAppointment];
 }
 
+class MedicalAppointmentRegistered extends MedicalAppointmentState {
+
+  final String response;
+
+  MedicalAppointmentRegistered({@required this.response}) : assert(response != null);
+
+  List<Object> get props => [response];
+}
+
 class MedicalAppointmentsError extends MedicalAppointmentState {}

@@ -177,7 +177,7 @@ class _DoctorFormState extends State<DoctorForm> {
           keyboardType: TextInputType.number,
           validator: (value) => _validateIdentification(value) ,
           onChanged: (value) {
-            DoctorForm.doctor.id = value;
+            DoctorForm.doctor.identification = value;
           }
       ),
     );
@@ -261,9 +261,9 @@ class _DoctorFormState extends State<DoctorForm> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          FaIcon(FontAwesomeIcons.venusMars),
+          FaIcon(FontAwesomeIcons.venusMars, color: Color.fromRGBO(140, 140, 140, 1)),
           SizedBox(width: _screenWidth*0.03,),
-          Text('Genero'),
+          Text('Genero', style: TextStyle(color: Color.fromRGBO(140, 140, 140, 1)),),
           SizedBox(width: _screenWidth*0.03,),
           DropdownButton(
             value: _dropdownGender,
@@ -277,7 +277,7 @@ class _DoctorFormState extends State<DoctorForm> {
             items: ['No especificado', 'Masculino', 'Femenino'].map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value),
+                child: Text(value, style: TextStyle(color: Color.fromRGBO(140, 140, 140, 1)),),
               );
             }).toList(),
           )
@@ -292,9 +292,9 @@ class _DoctorFormState extends State<DoctorForm> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          FaIcon(FontAwesomeIcons.userGraduate),
+          FaIcon(FontAwesomeIcons.userGraduate, color: Color.fromRGBO(140, 140, 140, 1)),
           SizedBox(width: _screenWidth*0.03,),
-          Text('Titulo'),
+          Text('Titulo', style: TextStyle(color: Color.fromRGBO(140, 140, 140, 1)),),
           SizedBox(width: _screenWidth*0.03,),
           DropdownButton(
             value: _dropdownDegree,
@@ -308,7 +308,7 @@ class _DoctorFormState extends State<DoctorForm> {
             items: ['Medico', 'Pediatra', 'Oftalmologo', 'Odontologo'].map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value),
+                child: Text(value, style: TextStyle(color: Color.fromRGBO(140, 140, 140, 1)),),
               );
             }).toList(),
           )

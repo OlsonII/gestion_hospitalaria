@@ -8,7 +8,7 @@ Patient patientFromJson(String str) => Patient.fromJson(json.decode(str));
 String patientToJson(Patient data) => json.encode(data.toJson());
 
 class Patient extends Person {
-  String id;
+  String identification;
   String name;
   String surname;
   int age;
@@ -18,7 +18,7 @@ class Patient extends Person {
   double discount;
 
   Patient({
-    this.id,
+    this.identification,
     this.name,
     this.surname,
     this.age,
@@ -29,7 +29,7 @@ class Patient extends Person {
   });
 
   factory Patient.fromJson(Map<String, dynamic> json) => Patient(
-    id: json["id"],
+    identification: json["id"],
     name: json["name"],
     surname: json["surname"],
     age: json["age"],
@@ -40,7 +40,7 @@ class Patient extends Person {
   );
 
   Map<String, dynamic> toJson() => {
-    "identification": id,
+    "identification": identification,
     "name": name,
     "surname": surname,
     "age": age,

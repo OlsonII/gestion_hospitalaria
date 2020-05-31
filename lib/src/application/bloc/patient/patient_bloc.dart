@@ -25,7 +25,7 @@ class PatientBloc{
 
   void _onEvent(PatientEvent event) async {
     if(event is SearchPatient){
-      _patientOutput.add(PatientLoaded(patient: await _patientRepository.getSpecifyPatient(event.patient.id)));
+      _patientOutput.add(PatientLoaded(patient: await _patientRepository.getSpecifyPatient(event.patient.identification)));
     }else if(event is RegisterPatient){
       var response =  await _patientRepository.createPatient(event.patient);
       print('response $response');

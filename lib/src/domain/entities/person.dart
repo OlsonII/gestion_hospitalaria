@@ -1,13 +1,13 @@
 
 abstract class Person {
-  String id;
+  String identification;
   String name;
   String surname;
   int age;
   String gender;
 
   Person({
-    this.id,
+    this.identification,
     this.name,
     this.surname,
     this.age,

@@ -38,12 +38,16 @@ class MedicalAppointmentRepository {
     }
   }
 
-  Future<bool> createMedicalAppointment(MedicalAppointment medicalAppointment) async{
+  Future<String> createMedicalAppointment(MedicalAppointment medicalAppointment) async{
     return await http.post(_URL,
         headers: {'content-type': 'application/json'},
         body: medicalAppointmentToJson(medicalAppointment))
-        .then((response) => true)
-        .catchError((onError) => onError);
+        .then((response) {
+          print(jsonDecode(response.body)['mensaje']);
+          return jsonDecode(response.body)['mensaje'];
+        }).catchError((onError) {
+      print('error: $onError');
+    });
   }
 
 }

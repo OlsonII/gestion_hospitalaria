@@ -49,13 +49,15 @@ class MedicalAppointment implements IMedicalService{
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "doctor": doctor.toJson(),
-    "patient": patient.toJson(),
-    "date": date,
-    "hour": hour,
-    "state": state,
-    "prescription": prescription.toJson(),
+    "doctor": {
+      "id": doctor.identification
+    },
+    "patient": {
+      "id": patient.identification
+    },
+    "date": date.toIso8601String(),
+//    "hour": hour,
+//    "prescription": prescription.toJson()
   };
 
 }

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class DoctorRepository {
 
-  static const String _URL = 'http://192.168.0.28:5000/medicalService/Patient';
+  static const String _URL = 'http://192.168.0.28:5000/medicalService/Doctor';
 
   Future<List<Doctor>> getAllDoctors() async {
     try{
@@ -37,7 +37,6 @@ class DoctorRepository {
   }
 
   Future<String> registerDoctor(Doctor doctor) async{
-    print(doctorToJson(doctor));
     return await http.post(_URL, headers: {'Content-Type': 'application/json', 'accept': 'text/plain'},
         body: doctorToJson(doctor)
     ).then((response) {

@@ -27,6 +27,8 @@ class MedicalAppointmentBloc{
   void _onEvent(MedicalAppointmentEvent event) async {
     if(event is SearchAllMedicalAppointmentEvent){
       _medicalAppointmentOutput.add(MedicalAppointmentsLoaded(medicalAppointments: await _medicalAppointmentRepository.searchAllMedicalAppointments()));
+    }else if(event is RegisterMedicalAppointmentEvent){
+      _medicalAppointmentOutput.add(MedicalAppointmentRegistered(response: await _medicalAppointmentRepository.createMedicalAppointment(event.medicalAppointment)));
     }
   }
 
