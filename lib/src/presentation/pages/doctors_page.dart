@@ -4,6 +4,7 @@ import 'package:gestion_hospitalaria/src/application/bloc/doctor/doctor_event.da
 import 'package:gestion_hospitalaria/src/application/bloc/doctor/doctor_state.dart';
 import 'package:gestion_hospitalaria/src/presentation/forms/doctor_form.dart';
 import 'package:gestion_hospitalaria/src/presentation/loaders/color_progress_indicator.dart';
+import 'package:gestion_hospitalaria/src/presentation/pages/doctor_profile_page.dart';
 
 class DoctorsPage extends StatefulWidget {
 
@@ -12,21 +13,19 @@ class DoctorsPage extends StatefulWidget {
 }
 
 class _DoctorsPageState extends State<DoctorsPage> {
+
   Size _screenSize;
-
   double _screenWidth;
-
   double _screenHeight;
-
   bool _screenLow;
 
   final _standartRadius = Radius.circular(13.0);
 
-  bool _register = false;
+  Widget _pageSelected;
 
   @override
   Widget build(BuildContext context) {
-
+    if(_pageSelected == null) _pageSelected = _buildDoctorsContainer();
     _screenSize = MediaQuery.of(context).size;
     _screenWidth = _screenSize.width;
     _screenHeight = _screenSize.height;
@@ -40,9 +39,9 @@ class _DoctorsPageState extends State<DoctorsPage> {
       child: Column(
         children: <Widget>[
           Expanded(
-            child: _register ? DoctorForm() : _buildDoctorsContainer(),
+            child: _pageSelected //_register ? DoctorForm() : _buildDoctorsContainer(),
           ),
-          !_register ? _buildButtons() : _buildComplete(context)
+          _pageSelected != DoctorForm() ? _buildButtons() : _buildComplete()
         ],
       ),
     );
@@ -63,7 +62,8 @@ class _DoctorsPageState extends State<DoctorsPage> {
                     style: TextStyle(fontSize: 17.0, color: Colors.white)),
                 onPressed: (){
                   setState(() {
-                    _register = !_register;
+                    _pageSelected = DoctorForm();
+//                    _register = !_register;
                   });
                 },
               ),
@@ -125,11 +125,16 @@ class _DoctorsPageState extends State<DoctorsPage> {
       child: ListTile(
         title: Text(doctor.name),
         subtitle: Text('${doctor.degree} - ${doctor.workday}'),
+        onTap: (){
+          setState(() {
+            _pageSelected = DoctorProfilePage();
+          });
+        },
       ),
     );
   }
 
-  _buildComplete(BuildContext context) {
+  _buildComplete() {
     return Center(
       child: Container(
         decoration: BoxDecoration(

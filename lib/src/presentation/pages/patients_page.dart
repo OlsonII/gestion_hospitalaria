@@ -5,6 +5,7 @@ import 'package:gestion_hospitalaria/src/application/bloc/patient/patient_state.
 import 'package:gestion_hospitalaria/src/domain/entities/patient.dart';
 import 'package:gestion_hospitalaria/src/presentation/forms/patient_form.dart';
 import 'package:gestion_hospitalaria/src/presentation/loaders/color_progress_indicator.dart';
+import 'package:gestion_hospitalaria/src/presentation/pages/patient_profile_page.dart';
 
 class PatientsPage extends StatefulWidget {
 
@@ -13,21 +14,19 @@ class PatientsPage extends StatefulWidget {
 }
 
 class _PatientsPageState extends State<PatientsPage> {
+
   Size _screenSize;
-
   double _screenWidth;
-
   double _screenHeight;
-
   bool _screenLow;
+  Widget _pageSelected;
 
   final _standarRadius = Radius.circular(13.0);
 
-  bool _register = false;
 
   @override
   Widget build(BuildContext context) {
-
+    if(_pageSelected == null) _pageSelected = _buildPatientsContainer();
     patientBloc.sendPatientEvent.add(SearchAllPatients());
 
     _screenSize = MediaQuery.of(context).size;
@@ -41,9 +40,9 @@ class _PatientsPageState extends State<PatientsPage> {
       child: Column(
         children: <Widget>[
           Expanded(
-            child: _register ? PatientForm() : _buildPatientsContainer(),
+            child: _pageSelected //_register ? PatientForm() : _buildPatientsContainer(),
           ),
-          !_register ? _buildButtons() : _buildComplete()
+          _pageSelected != PatientForm() ? _buildButtons() : _buildComplete()
         ],
       ),
     );
@@ -62,8 +61,9 @@ class _PatientsPageState extends State<PatientsPage> {
             child: Text(_screenLow ? 'Registrar' : 'Registrar paciente', style: TextStyle(fontSize: 17.0, color: Colors.white)),
             onPressed: (){
               setState(() {
-                _register = !_register;
+//                _register = !_register;
               });
+              _pageSelected = PatientForm();
             },
           ),
         ),
@@ -124,6 +124,11 @@ class _PatientsPageState extends State<PatientsPage> {
       child: ListTile(
         title: Text('${patient.name} ${patient.surname}'),
         subtitle: Text('Estrato: ${patient.stratum} - ${patient.eps}'),
+        onTap: (){
+          setState(() {
+            _pageSelected = PatientProfilePage();
+          });
+        },
       ),
     );
   }
