@@ -26,13 +26,22 @@ class MedicalAppointmentRepository {
     }
   }
 
-  Future<MedicalAppointment> getSpecifyMedicalAppointment(String id, bool isPatient) async {
+  Future<List<MedicalAppointment>> getSpecifyMedicalAppointment(String id, bool isPatient) async {
     try{
       var response = isPatient ?
         await http.get(_URL+'/patient/$id') :
         await http.get(_URL+'/doctor/$id');
-      var decodedData = jsonDecode(response.body);
-      return MedicalAppointment.fromJson(decodedData[0]);
+      var decodedData = jsonDecode(response.body)["medicalAppointment"];
+      final List<MedicalAppointment> medicalAppointments = new List();
+
+      if(decodedData == null) return [];
+
+      decodedData.forEach((medicalAppointment){
+        var medicalAppointmentTemporal = MedicalAppointment.fromJson(medicalAppointment);
+        medicalAppointments.add(medicalAppointmentTemporal);
+      });
+
+      return medicalAppointments;
     }catch(e){
       print(e);
     }

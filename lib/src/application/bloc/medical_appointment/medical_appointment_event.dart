@@ -20,12 +20,13 @@ class RegisterMedicalAppointmentEvent extends MedicalAppointmentEvent {
 
 class SearchMedicalAppointmentEvent extends MedicalAppointmentEvent {
 
-  final MedicalAppointment medicalAppointment;
+  final String personId;
+  final bool isPatient;
 
-  const SearchMedicalAppointmentEvent({@required this.medicalAppointment}) : assert(medicalAppointment != null);
+  const SearchMedicalAppointmentEvent({@required this.personId, @required this.isPatient}) : assert(personId != null);
 
   @override
-  List<Object> get props => [medicalAppointment];
+  List<Object> get props => [personId, isPatient];
 
 }
 

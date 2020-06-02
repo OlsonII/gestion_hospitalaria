@@ -19,17 +19,18 @@ class _DoctorsPageState extends State<DoctorsPage> {
   double _screenHeight;
   bool _screenLow;
 
-  final _standartRadius = Radius.circular(13.0);
+  final _standarRadius = Radius.circular(13.0);
 
   Widget _pageSelected;
 
   @override
   Widget build(BuildContext context) {
+
     if(_pageSelected == null) _pageSelected = _buildDoctorsContainer();
+
     _screenSize = MediaQuery.of(context).size;
     _screenWidth = _screenSize.width;
     _screenHeight = _screenSize.height;
-
     _screenWidth < 700 ? _screenLow = true : _screenLow = false;
 
     doctorBloc.sendDoctorEvent.add(SearchAllDoctors());
@@ -41,48 +42,107 @@ class _DoctorsPageState extends State<DoctorsPage> {
           Expanded(
             child: _pageSelected //_register ? DoctorForm() : _buildDoctorsContainer(),
           ),
-          _pageSelected != DoctorForm() ? _buildButtons() : _buildComplete()
+          _buildButtons()
         ],
       ),
     );
 
   }
 
-  Row _buildButtons() {
+  _buildButtons() {
+    if(_pageSelected is DoctorForm){
+      return _buildCompleteButton();
+    }else if(_pageSelected is DoctorProfilePage){
+      return _buildModifyButton();
+    }else{
+      return _buildRegisterButton();
+    }
+  }
+
+  Center _buildRegisterButton() {
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(_standarRadius),
+            color: Color.fromRGBO(78, 76, 173, 1)
+        ),
+        child: FlatButton(
+          child: Text(_screenLow ? 'Registrar' : 'Registrar doctor', style: TextStyle(fontSize: 17.0, color: Colors.white)),
+          onPressed: (){
+            setState(() {
+              _pageSelected = DoctorForm();
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModifyButton() {
     return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(_standartRadius),
-                color: Color.fromRGBO(78, 76, 173, 1)
-              ),
-              child: FlatButton(
-                child: Text(_screenLow ? 'Registrar' : 'Registrar doctor',
-                    style: TextStyle(fontSize: 17.0, color: Colors.white)),
-                onPressed: (){
-                  setState(() {
-                    _pageSelected = DoctorForm();
-//                    _register = !_register;
-                  });
-                },
-              ),
-            ),
-            SizedBox(
-              width: _screenWidth*0.05,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(_standartRadius),
-                  color: Color.fromRGBO(251, 139, 142, 1)
-              ),
-              child: FlatButton(
-                child: Text(_screenLow ? 'Modificar' : 'Modificar doctor', style: TextStyle(fontSize: 17.0, color: Colors.white),),
-                onPressed: (){},
-              ),
-            ),
-          ],
-        );
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(width: _screenWidth*0.05),
+        _buildBackButton(),
+        Expanded(child: Container()),
+        Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(_standarRadius),
+              color: Color.fromRGBO(251, 139, 142, 1)
+          ),
+          child: FlatButton(
+            child: Text(_screenLow ? 'Modificar' :'Modificar doctor', style: TextStyle(fontSize: 17.0, color: Colors.white),),
+            onPressed: (){},
+          ),
+        ),
+        Expanded(child: Container())
+      ],
+    );
+  }
+
+  Container _buildBackButton() {
+    return Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(_standarRadius),
+            color: Color.fromRGBO(78, 76, 173, 1)
+        ),
+        child: FlatButton(
+          child: Text('Atras', style: TextStyle(fontSize: 17.0, color: Colors.white),),
+          onPressed: (){
+            setState(() {
+              _pageSelected = _buildDoctorsContainer();
+            });
+          },
+        ),
+      );
+  }
+
+  Widget _buildCompleteButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(width: _screenWidth*0.05),
+        _buildBackButton(),
+        Expanded(child: Container()),
+        Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(_standarRadius),
+              color: Color.fromRGBO(251, 139, 142, 1)
+          ),
+          child: FlatButton(
+            child: Text(_screenLow ? 'Completar' : 'Completar registro',
+                style: TextStyle(fontSize: 17.0, color: Colors.white)),
+            onPressed: (){
+              setState(() {
+                DoctorForm().submitForm(context);
+                _pageSelected = _buildDoctorsContainer();
+              });
+            },
+          ),
+        ),
+        Expanded(child: Container())
+      ],
+    );
   }
 
   Container _buildDoctorsContainer() {
@@ -91,7 +151,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
         margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.all(_standartRadius),
+          borderRadius: BorderRadius.all(_standarRadius),
           boxShadow: [
             BoxShadow(
               color: Color.fromRGBO(0, 0, 0, 0.07),
@@ -107,6 +167,8 @@ class _DoctorsPageState extends State<DoctorsPage> {
           builder: (context, snapshot){
             if(snapshot.data is DoctorsLoaded){
               return ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
                   itemCount: snapshot.data.doctors.length,
                   itemBuilder: (context, item) => _createItemList(context, snapshot.data.doctors[item])
               );
@@ -138,7 +200,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
     return Center(
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(_standartRadius),
+            borderRadius: BorderRadius.all(_standarRadius),
             color: Color.fromRGBO(78, 76, 173, 1)
         ),
         child: FlatButton(

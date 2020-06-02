@@ -29,6 +29,14 @@ class MedicalAppointmentBloc{
       _medicalAppointmentOutput.add(MedicalAppointmentsLoaded(medicalAppointments: await _medicalAppointmentRepository.searchAllMedicalAppointments()));
     }else if(event is RegisterMedicalAppointmentEvent){
       _medicalAppointmentOutput.add(MedicalAppointmentRegistered(response: await _medicalAppointmentRepository.createMedicalAppointment(event.medicalAppointment)));
+    }else if(event is SearchMedicalAppointmentEvent){
+      var response;
+      if(event.isPatient){
+         response = await _medicalAppointmentRepository.getSpecifyMedicalAppointment(event.personId, true);
+      }else{
+        response = await _medicalAppointmentRepository.getSpecifyMedicalAppointment(event.personId, false);
+      }
+      _medicalAppointmentOutput.add(MedicalAppointmentsLoaded(medicalAppointments: response));
     }
   }
 

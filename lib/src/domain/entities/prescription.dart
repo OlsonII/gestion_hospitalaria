@@ -30,7 +30,6 @@ class Prescription {
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
     "creation_date": creationDate,
     "expiration_date": expirationDate,
     "medicines": List<dynamic>.from(medicines.map((x) => x.toJson())),

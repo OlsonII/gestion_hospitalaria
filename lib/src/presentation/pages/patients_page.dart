@@ -26,13 +26,13 @@ class _PatientsPageState extends State<PatientsPage> {
 
   @override
   Widget build(BuildContext context) {
+
     if(_pageSelected == null) _pageSelected = _buildPatientsContainer();
     patientBloc.sendPatientEvent.add(SearchAllPatients());
 
     _screenSize = MediaQuery.of(context).size;
     _screenWidth = _screenSize.width;
     _screenHeight = _screenSize.height;
-
     _screenWidth < 700 ? _screenLow = true : _screenLow = false;
 
     return Container(
@@ -40,36 +40,49 @@ class _PatientsPageState extends State<PatientsPage> {
       child: Column(
         children: <Widget>[
           Expanded(
-            child: _pageSelected //_register ? PatientForm() : _buildPatientsContainer(),
+            child: _pageSelected
           ),
-          _pageSelected != PatientForm() ? _buildButtons() : _buildComplete()
+          _buildButtons()
         ],
       ),
     );
   }
+  _buildButtons() {
+    if(_pageSelected is PatientForm){
+      return _buildCompleteButton();
+    }else if(_pageSelected is PatientProfilePage){
+      return _buildModifyButton();
+    }else{
+      return _buildRegisterButton();
+    }
+  }
 
-  Row _buildButtons() {
+  Center _buildRegisterButton() {
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(_standarRadius),
+            color: Color.fromRGBO(78, 76, 173, 1)
+        ),
+        child: FlatButton(
+          child: Text(_screenLow ? 'Registrar' : 'Registrar paciente', style: TextStyle(fontSize: 17.0, color: Colors.white)),
+          onPressed: (){
+            setState(() {
+               _pageSelected = PatientForm();
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModifyButton() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(_standarRadius),
-              color: Color.fromRGBO(78, 76, 173, 1)
-          ),
-          child: FlatButton(
-            child: Text(_screenLow ? 'Registrar' : 'Registrar paciente', style: TextStyle(fontSize: 17.0, color: Colors.white)),
-            onPressed: (){
-              setState(() {
-//                _register = !_register;
-              });
-              _pageSelected = PatientForm();
-            },
-          ),
-        ),
-        SizedBox(
-          width: _screenWidth*0.05,
-        ),
+      children: [
+        SizedBox(width: _screenWidth*0.05),
+        _buildBackButton(),
+        Expanded(child: Container()),
         Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(_standarRadius),
@@ -80,6 +93,52 @@ class _PatientsPageState extends State<PatientsPage> {
             onPressed: (){},
           ),
         ),
+        Expanded(child: Container())
+      ],
+    );
+  }
+
+  Container _buildBackButton() {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(_standarRadius),
+          color: Color.fromRGBO(78, 76, 173, 1)
+      ),
+      child: FlatButton(
+        child: Text('Atras', style: TextStyle(fontSize: 17.0, color: Colors.white),),
+        onPressed: (){
+          setState(() {
+            _pageSelected = _buildPatientsContainer();
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _buildCompleteButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(width: _screenWidth*0.05),
+        _buildBackButton(),
+        Expanded(child: Container()),
+        Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(_standarRadius),
+              color: Color.fromRGBO(251, 139, 142, 1)
+          ),
+          child: FlatButton(
+            child: Text(_screenLow ? 'Completar' : 'Completar registro',
+                style: TextStyle(fontSize: 17.0, color: Colors.white)),
+            onPressed: (){
+              setState(() {
+                PatientForm().submitForm(context);
+                _pageSelected = _buildPatientsContainer();
+              });
+            },
+          ),
+        ),
+        Expanded(child: Container())
       ],
     );
   }
@@ -106,6 +165,8 @@ class _PatientsPageState extends State<PatientsPage> {
           builder: (context, snapshot){
             if(snapshot.data is PatientsLoaded){
               return ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
                   itemCount: snapshot.data.patients.length,
                   itemBuilder: (context, item) => _createItemList(context, snapshot.data.patients[item])
               );
@@ -126,30 +187,9 @@ class _PatientsPageState extends State<PatientsPage> {
         subtitle: Text('Estrato: ${patient.stratum} - ${patient.eps}'),
         onTap: (){
           setState(() {
-            _pageSelected = PatientProfilePage();
+            _pageSelected = PatientProfilePage(patient);
           });
         },
-      ),
-    );
-  }
-
-  _buildComplete() {
-    return Center(
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(_standarRadius),
-            color: Color.fromRGBO(78, 76, 173, 1)
-        ),
-        child: FlatButton(
-          child: Text(_screenLow ? 'Completar' : 'Completar registro',
-              style: TextStyle(fontSize: 17.0, color: Colors.white)),
-          onPressed: (){
-            setState(() {
-//              _register = !_register;
-              PatientForm().submitForm(context);
-            });
-          },
-        ),
       ),
     );
   }
