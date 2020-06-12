@@ -90,7 +90,7 @@ class _MedicalAppointmentsPageState extends State<MedicalAppointmentsPage> {
         SizedBox(width: _screenWidth*0.05),
         _buildBackButton(),
         Expanded(child: Container()),
-        Container(
+        /*Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(_standarRadius),
               color: Color.fromRGBO(251, 139, 142, 1)
@@ -100,7 +100,7 @@ class _MedicalAppointmentsPageState extends State<MedicalAppointmentsPage> {
             onPressed: (){},
           ),
         ),
-        Expanded(child: Container())
+        Expanded(child: Container())*/
       ],
     );
   }
@@ -215,26 +215,5 @@ class _MedicalAppointmentsPageState extends State<MedicalAppointmentsPage> {
       case 'Odontologo':
         return 'Odontologia';
     }
-  }
-
-  _buildComplete(BuildContext context) {
-    return Center(
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(_standarRadius),
-            color: Color.fromRGBO(78, 76, 173, 1)
-        ),
-        child: FlatButton(
-          child: Text(_screenLow ? 'Completar' : 'Completar registro',
-              style: TextStyle(fontSize: 17.0, color: Colors.white)),
-          onPressed: (){
-            setState(() {
-//              _register = !_register;
-              MedicalAppointmentForm().submitForm(context);
-            });
-          },
-        ),
-      ),
-    );
   }
 }

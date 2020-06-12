@@ -37,6 +37,8 @@ class MedicalAppointmentBloc{
         response = await _medicalAppointmentRepository.getSpecifyMedicalAppointment(event.personId, false);
       }
       _medicalAppointmentOutput.add(MedicalAppointmentsLoaded(medicalAppointments: response));
+    }else if(event is CancelMedicalAppointmentEvent){
+//      response = await _medicalAppointmentRepository.
     }
   }
 

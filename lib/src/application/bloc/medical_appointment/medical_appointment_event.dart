@@ -38,3 +38,36 @@ class SearchAllMedicalAppointmentEvent extends MedicalAppointmentEvent {
   List<Object> get props => [medicalAppointments];
 
 }
+
+class CancelMedicalAppointmentEvent extends MedicalAppointmentEvent {
+
+  final MedicalAppointment medicalAppointment;
+
+  const CancelMedicalAppointmentEvent({@required this.medicalAppointment}) : assert(medicalAppointment != null);
+
+  @override
+  List<Object> get props => [medicalAppointment];
+
+}
+
+class CompleteMedicalAppointmentEvent extends MedicalAppointmentEvent {
+
+  final MedicalAppointment medicalAppointment;
+
+  const CompleteMedicalAppointmentEvent({@required this.medicalAppointment}) : assert(medicalAppointment != null);
+
+  @override
+  List<Object> get props => [medicalAppointment];
+
+}
+
+class PostponeMedicalAppointmentEvent extends MedicalAppointmentEvent {
+
+  final MedicalAppointment medicalAppointment;
+
+  const PostponeMedicalAppointmentEvent({@required this.medicalAppointment}) : assert(medicalAppointment != null);
+
+  @override
+  List<Object> get props => [medicalAppointment];
+
+}
