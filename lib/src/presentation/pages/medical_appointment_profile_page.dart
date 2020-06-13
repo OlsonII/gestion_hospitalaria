@@ -1,19 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gestion_hospitalaria/src/application/bloc/medical_appointment/medical_appointment_bloc.dart';
+import 'package:gestion_hospitalaria/src/application/bloc/medical_appointment/medical_appointment_event.dart';
+import 'package:gestion_hospitalaria/src/application/bloc/medical_appointment/medical_appointment_state.dart';
 import 'package:gestion_hospitalaria/src/domain/entities/medical_appointment.dart';
 import 'package:gestion_hospitalaria/src/infrastructure/utils/global_date.dart';
 
-class MedicalAppointmentProfilePage extends StatelessWidget {
+import 'home_page.dart';
 
-  Radius _standartRadius = Radius.circular(13.0);
+class MedicalAppointmentProfilePage extends StatefulWidget {
+
   MedicalAppointment _medicalAppointment;
-
-  double _screenWidth;
-  double _screenHeight;
-  bool _screenLow = false;
 
 
   MedicalAppointmentProfilePage(this._medicalAppointment);
+
+  @override
+  _MedicalAppointmentProfilePageState createState() => _MedicalAppointmentProfilePageState();
+}
+
+class _MedicalAppointmentProfilePageState extends State<MedicalAppointmentProfilePage> {
+  Radius _standartRadius = Radius.circular(13.0);
+
+  double _screenWidth;
+
+  double _screenHeight;
+
+  bool _screenLow = false;
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +81,8 @@ class MedicalAppointmentProfilePage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Estado', style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),),
-          Text('${_medicalAppointment.state}'),
-          Text('Fecha: ${globalDate.formatDate(_medicalAppointment.date)}')
+          Text('${widget._medicalAppointment.state}'),
+          Text('Fecha: ${globalDate.formatDate(widget._medicalAppointment.date)}')
         ],
       );
   }
@@ -103,14 +116,16 @@ class MedicalAppointmentProfilePage extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(_standartRadius),
-          color: Color.fromRGBO(251, 139, 142, 1)
+          color: widget._medicalAppointment.state != 'Cancelada' ?
+          Color.fromRGBO(251, 139, 142, 1) : Colors.grey
       ),
       child: FlatButton(
         child: !_screenLow ? Text('Cancelar',
             style: TextStyle(fontSize: 15.0, color: Colors.white)) :
         FaIcon(FontAwesomeIcons.ban, color: Colors.white),
         onPressed: (){
-
+          widget._medicalAppointment.state != 'Cancelada' ?
+          actionInfoDialog(context, 'Cancelar') : (){};
         },
       ),
     );
@@ -120,13 +135,16 @@ class MedicalAppointmentProfilePage extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(_standartRadius),
-          color: Color.fromRGBO(255, 188, 132, 1)
+          color: widget._medicalAppointment.state != 'Cancelada' ?
+          Color.fromRGBO(255, 188, 132, 1) : Colors.grey
       ),
       child: FlatButton(
         child: !_screenLow ? Text('Postponer',
             style: TextStyle(fontSize: 15.0, color: Colors.white)) :
         FaIcon(FontAwesomeIcons.solidClock, color: Colors.white),
         onPressed: (){
+          widget._medicalAppointment.state != 'Cancelada' ?
+          (){} : (){};
         },
       ),
     );
@@ -134,16 +152,18 @@ class MedicalAppointmentProfilePage extends StatelessWidget {
 
   Container _buildCompleteButton() {
     return Container(
-//                        width: _screenWidth*0.11,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(_standartRadius),
-          color: Color.fromRGBO(171, 208, 188, 1)
+          color: widget._medicalAppointment.state != 'Cancelada' ?
+          Color.fromRGBO(171, 208, 188, 1) : Colors.grey
       ),
       child: FlatButton(
         child: !_screenLow ? Text('Completar',
             style: TextStyle(fontSize: 15.0, color: Colors.white)) :
         FaIcon(FontAwesomeIcons.check, color: Colors.white),
         onPressed: (){
+          widget._medicalAppointment.state != 'Cancelada' ?
+              (){} : (){};
         },
       ),
     );
@@ -160,17 +180,84 @@ class MedicalAppointmentProfilePage extends StatelessWidget {
     );
   }
 
+  actionInfoDialog(BuildContext context, String action){
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Text('$action de cita medica', style: TextStyle(fontWeight: FontWeight.bold),),
+            content: Text('Esta seguro de $action esta cita medica?'),
+            actions: [
+              FlatButton(
+                child: Text('Cancelar'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              FlatButton(
+                child: Text('Aceptar'),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                  switch(action){
+                    case 'Cancelar':
+                      setState(() {
+                        widget._medicalAppointment.state = 'Cancelada';
+                        medicalAppointmentBloc.sendMedicalAppointmentEvent.add(CancelMedicalAppointmentEvent(medicalAppointment: widget._medicalAppointment));
+                      });
+                      break;
+                  }
+                  _showResponse(action);
+                },
+              )
+            ],
+          );
+        }
+    );
+  }
+
+  _showResponse(String action){
+    medicalAppointmentBloc.medicalAppointmentStream.forEach((element) {
+      if(element is MedicalAppointmentRegistered){
+        if(element.response == 'Cita medica $action satisfactoriamente'){
+          _registeredMedicalAppointmentDialog(HomePage.scaffoldKey.currentContext, element.response);
+          return true;
+        }
+        _registeredMedicalAppointmentDialog(HomePage.scaffoldKey.currentContext, element.response);
+      }
+      return false;
+    });
+  }
+
+  _registeredMedicalAppointmentDialog(BuildContext context, response){
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Text('Respuesta', style: TextStyle(fontWeight: FontWeight.bold),),
+            content: Text('$response'),
+            actions: [
+              FlatButton(
+                child: Text('Cerrar'),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          );
+        }
+    );
+  }
+
   Container _buildAddMedicineButton() {
     return Container(
       width: _screenWidth*0.05,
       height: _screenHeight*0.05,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(_standartRadius),
-          color: Color.fromRGBO(171, 208, 188, 1)
+          color: widget._medicalAppointment.state != 'Cancelada' ?
+          Color.fromRGBO(171, 208, 188, 1) : Colors.grey
       ),
       child: FlatButton(
         child: FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 15.0,),
         onPressed: (){
+          widget._medicalAppointment.state != 'Cancelada' ?
+              (){} : (){};
         },
       ),
     );
@@ -182,11 +269,11 @@ class MedicalAppointmentProfilePage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Paciente', style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),),
-        Text('Identificacion: ${_medicalAppointment.patient.identification}'),
-        Text('Nombre: ${_medicalAppointment.patient.name} ${_medicalAppointment.patient.surname}'),
-        Text('Genero: ${_medicalAppointment.patient.gender}'),
-        Text('EPS: ${_medicalAppointment.patient.eps}'),
-        Text('Estrato: ${_medicalAppointment.patient.stratum}'),
+        Text('Identificacion: ${widget._medicalAppointment.patient.identification}'),
+        Text('Nombre: ${widget._medicalAppointment.patient.name} ${widget._medicalAppointment.patient.surname}'),
+        Text('Genero: ${widget._medicalAppointment.patient.gender}'),
+        Text('EPS: ${widget._medicalAppointment.patient.eps}'),
+        Text('Estrato: ${widget._medicalAppointment.patient.stratum}'),
       ],
     );
   }
@@ -197,8 +284,8 @@ class MedicalAppointmentProfilePage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Doctor', style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),),
-        Text('Nombre: ${_medicalAppointment.doctor.name} ${_medicalAppointment.doctor.surname}'),
-        Text('Titulo: ${_medicalAppointment.doctor.degree}'),
+        Text('Nombre: ${widget._medicalAppointment.doctor.name} ${widget._medicalAppointment.doctor.surname}'),
+        Text('Titulo: ${widget._medicalAppointment.doctor.degree}'),
       ],
     );
   }

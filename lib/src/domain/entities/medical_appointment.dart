@@ -49,6 +49,7 @@ class MedicalAppointment implements IMedicalService{
   );
 
   Map<String, dynamic> toJson() => {
+    "identification": this.id,
     "doctor": {
       "id": doctor.identification
     },

@@ -52,11 +52,22 @@ class MedicalAppointmentRepository {
         headers: {'content-type': 'application/json'},
         body: medicalAppointmentToJson(medicalAppointment))
         .then((response) {
-          print(jsonDecode(response.body)['mensaje']);
           return jsonDecode(response.body)['mensaje'];
         }).catchError((onError) {
       print('error: $onError');
     });
   }
 
+  Future<String> cancelMedicalAppointment(MedicalAppointment medicalAppointment) async {
+    try{
+      var response = await http.put(_URL+'/Cancel',
+          headers: {'content-type': 'application/json'},
+          body: medicalAppointmentToJson(medicalAppointment));
+      return jsonDecode(response.body)['mensaje'];
+
+    }catch(e){
+      print('error: ${e.toString()}');
+      return 'Error';
+    }
+  }
 }

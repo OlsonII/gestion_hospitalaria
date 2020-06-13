@@ -38,7 +38,8 @@ class MedicalAppointmentBloc{
       }
       _medicalAppointmentOutput.add(MedicalAppointmentsLoaded(medicalAppointments: response));
     }else if(event is CancelMedicalAppointmentEvent){
-//      response = await _medicalAppointmentRepository.
+      var response = await _medicalAppointmentRepository.cancelMedicalAppointment(event.medicalAppointment);
+      _medicalAppointmentOutput.add(MedicalAppointmentRegistered(response: response));
     }
   }
 
