@@ -45,6 +45,7 @@ class Doctor extends Person {
     "surname": surname,
     "age": age,
     "gender": gender,
+    "workday": workday,
     "experience": experience,
     "degree": degree
   };

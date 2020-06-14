@@ -19,8 +19,6 @@ class MedicalAppointmentForm extends StatefulWidget {
 
   static GlobalKey<FormState> formMedicalAppointmentKey = new GlobalKey<FormState>();
 
-
-  static final medicalAppointment = new MedicalAppointment();
   static String response;
 
   bool submitForm(BuildContext context){
@@ -36,6 +34,7 @@ class MedicalAppointmentForm extends StatefulWidget {
 
 class _MedicalAppointmentFormState extends State<MedicalAppointmentForm> {
 
+  static final medicalAppointment = new MedicalAppointment();
   Size _screenSize;
   double _screenWidth;
   double _screenHeight;
@@ -155,8 +154,8 @@ class _MedicalAppointmentFormState extends State<MedicalAppointmentForm> {
               FlatButton(
                 child: Text('Registrar'),
                 onPressed: (){
-                  MedicalAppointmentForm.medicalAppointment.date = globalDate.dateSelected;
-                  medicalAppointmentBloc.sendMedicalAppointmentEvent.add(RegisterMedicalAppointmentEvent(medicalAppointment: MedicalAppointmentForm.medicalAppointment));
+                  medicalAppointment.date = globalDate.dateSelected;
+                  medicalAppointmentBloc.sendMedicalAppointmentEvent.add(RegisterMedicalAppointmentEvent(medicalAppointment: medicalAppointment));
                   Navigator.of(context).pop();
                   _showResponse();
                 },
@@ -285,7 +284,7 @@ class _MedicalAppointmentFormState extends State<MedicalAppointmentForm> {
           },*/
           onSaved: (value) {
             if(value != null)
-              MedicalAppointmentForm.medicalAppointment.patient = new Patient(identification: value);
+              medicalAppointment.patient = new Patient(identification: value);
           }
       ),
     );
@@ -321,7 +320,7 @@ class _MedicalAppointmentFormState extends State<MedicalAppointmentForm> {
       onChanged: (value){
         setState(() {
           _selectedDoctor = value;
-          MedicalAppointmentForm.medicalAppointment.doctor = new Doctor(identification: value);
+          medicalAppointment.doctor = new Doctor(identification: value);
         });
       },
       items: _filterDoctors().map<DropdownMenuItem<String>>((dynamic value) {

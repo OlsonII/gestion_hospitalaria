@@ -90,8 +90,9 @@ class PatientProfilePage extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 20.0),
       child: ListTile(
         title: Text('Cita de ${_selectMedicalAppointmentType(medicalAppointment.doctor.degree)}'),
-        subtitle: Text('Con ${medicalAppointment.doctor.name} ${medicalAppointment.doctor.surname} ${globalDate.formatDate(medicalAppointment.date)} a las ${globalDate.formatHour(medicalAppointment.hour)}'),
+        subtitle: Text('Con ${medicalAppointment.doctor.name} ${medicalAppointment.doctor.surname} ${globalDate.formatDate(medicalAppointment.date)} en la ${medicalAppointment.time}'),
         trailing: Text('${medicalAppointment.state}'),
+        leading: Text('${medicalAppointment.turn}', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
         onTap: () {
           /*setState(() {
             _pageSelected = MedicalAppointmentProfilePage();

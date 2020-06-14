@@ -69,6 +69,7 @@ class _PatientsPageState extends State<PatientsPage> {
           onPressed: (){
             setState(() {
                _pageSelected = PatientForm();
+               patientBloc.sendPatientEvent.add(SearchAllPatients());
             });
           },
         ),

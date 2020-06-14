@@ -5,7 +5,8 @@ abstract class IMedicalService{
 
   Patient patient;
   DateTime date;
-  DateTime hour;
+  String time;
+  int turn;
   String state;
   double cost;
 

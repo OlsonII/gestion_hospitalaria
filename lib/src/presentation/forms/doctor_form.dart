@@ -6,6 +6,7 @@ import 'package:gestion_hospitalaria/src/application/bloc/doctor/doctor_event.da
 import 'package:gestion_hospitalaria/src/application/bloc/doctor/doctor_state.dart';
 import 'package:gestion_hospitalaria/src/domain/entities/doctor.dart';
 import 'package:gestion_hospitalaria/src/infrastructure/repositories/doctor_repository.dart';
+import 'package:gestion_hospitalaria/src/presentation/pages/doctors_page.dart';
 import 'package:gestion_hospitalaria/src/presentation/pages/home_page.dart';
 
 class DoctorForm extends StatefulWidget {
@@ -34,6 +35,7 @@ class _DoctorFormState extends State<DoctorForm> {
   bool _screenLow;
   String _dropdownGender = 'No especificado';
   String _dropdownDegree = 'Medico';
+  String _dropdownWorkday = 'Mañana';
   String _response = '';
 
   final _standartRadius = Radius.circular(13.0);
@@ -93,6 +95,8 @@ class _DoctorFormState extends State<DoctorForm> {
                 _buildGenderField(context),
                 SizedBox(height: _screenHeight*0.02),
                 _buildDegreeField(context),
+                SizedBox(height: _screenHeight*0.02),
+                _buildWordayField(context),
                 SizedBox(height: _screenHeight*0.02),
                 _buildExperienceField(context),
               ],
@@ -374,5 +378,36 @@ class _DoctorFormState extends State<DoctorForm> {
     if(value.isEmpty){
       return 'Por favor, digite la experiencia';
     }
+  }
+
+  _buildWordayField(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          FaIcon(FontAwesomeIcons.cloudSun, color: Color.fromRGBO(140, 140, 140, 1)),
+          SizedBox(width: _screenWidth*0.03,),
+          Text('Jornada', style: TextStyle(color: Color.fromRGBO(140, 140, 140, 1)),),
+          SizedBox(width: _screenWidth*0.03,),
+          DropdownButton(
+            value: _dropdownWorkday,
+            elevation: 16,
+            onChanged: (value){
+              setState(() {
+                _dropdownWorkday = value;
+                DoctorForm.doctor.workday = _dropdownWorkday;
+              });
+            },
+            items: ['Mañana', 'Tarde'].map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value, style: TextStyle(color: Color.fromRGBO(140, 140, 140, 1)),),
+              );
+            }).toList(),
+          )
+        ],
+      ),
+    );
   }
 }

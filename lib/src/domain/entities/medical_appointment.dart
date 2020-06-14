@@ -13,11 +13,13 @@ String medicalAppointmentToJson(MedicalAppointment data) => json.encode(data.toJ
 class MedicalAppointment implements IMedicalService{
 
   @override
+  String time;
+  @override
+  int turn;
+  @override
   double cost;
   @override
   DateTime date;
-  @override
-  DateTime hour;
   @override
   String state;
   @override
@@ -31,7 +33,8 @@ class MedicalAppointment implements IMedicalService{
     this.doctor,
     this.patient,
     this.date,
-    this.hour,
+    this.time,
+    this.turn,
     this.state,
     this.prescription,
     this.cost
@@ -42,14 +45,15 @@ class MedicalAppointment implements IMedicalService{
     doctor: Doctor.fromJson(json["doctor"]),
     patient: Patient.fromJson(json["patient"]),
     date: DateTime.parse(json["date"]),
-    hour: DateTime.parse(json["hour"]),
+    time: json["time"],
+    turn: json["turn"],
     state: json["state"],
     cost: json["cost"],
     prescription: json["prescription"],
   );
 
   Map<String, dynamic> toJson() => {
-    "identification": this.id,
+    "identification": this.id == null ? 0 : this.id,
     "doctor": {
       "id": doctor.identification
     },
@@ -60,5 +64,7 @@ class MedicalAppointment implements IMedicalService{
 //    "hour": hour,
 //    "prescription": prescription.toJson()
   };
+
+
 
 }

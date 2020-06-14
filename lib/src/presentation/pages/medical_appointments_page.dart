@@ -140,7 +140,7 @@ class _MedicalAppointmentsPageState extends State<MedicalAppointmentsPage> {
             onPressed: (){
               setState(() {
                 MedicalAppointmentForm().submitForm(context);
-                _pageSelected = _buildMedicalAppointmentContainer();
+//                _pageSelected = _buildMedicalAppointmentContainer();
               });
             },
           ),
@@ -172,17 +172,22 @@ class _MedicalAppointmentsPageState extends State<MedicalAppointmentsPage> {
                 stream: medicalAppointmentBloc.medicalAppointmentStream,
                 initialData: [],
                 builder: (context, snapshot){
-                  if(snapshot.data is MedicalAppointmentsLoaded){
-                    return ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemCount: snapshot.data.medicalAppointments.length,
-                        itemBuilder: (context, item) => _createItemList(context, snapshot.data.medicalAppointments[item])
-                    );
+                  if(snapshot.data != null){
+                    if(snapshot.data is MedicalAppointmentsLoaded){
+                      return ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: snapshot.data.medicalAppointments.length,
+                          itemBuilder: (context, item) => _createItemList(context, snapshot.data.medicalAppointments[item])
+                      );
+                    }
+                    else{
+                      return Center(child: ColorProgressIndicator(color1: Color.fromRGBO(251, 139, 142, 1), color2: Color.fromRGBO(55, 104, 242, 0.5), color3: Color.fromRGBO(78, 76, 173, 1),));
+                    }
+                  }else{
+                    return Center(child: Text('No hay citas medicas registradas'),);
                   }
-                  else{
-                    return Center(child: ColorProgressIndicator(color1: Color.fromRGBO(251, 139, 142, 1), color2: Color.fromRGBO(55, 104, 242, 0.5), color3: Color.fromRGBO(78, 76, 173, 1),));
-                  }
+
                 },
               )
           );
@@ -193,8 +198,9 @@ class _MedicalAppointmentsPageState extends State<MedicalAppointmentsPage> {
       margin: EdgeInsets.symmetric(horizontal: 20.0),
       child: ListTile(
         title: Text('Cita de ${_selectMedicalAppointmentType(medicalAppointment.doctor.degree)} para ${medicalAppointment.patient.name} ${medicalAppointment.patient.surname} '),
-        subtitle: Text('Con ${medicalAppointment.doctor.name} ${medicalAppointment.doctor.surname} ${globalDate.formatDate(medicalAppointment.date)} a las ${globalDate.formatHour(medicalAppointment.hour)}'),
+        subtitle: Text('Con ${medicalAppointment.doctor.name} ${medicalAppointment.doctor.surname} ${globalDate.formatDate(medicalAppointment.date)} en la ${medicalAppointment.time}'),
         trailing: Text('${medicalAppointment.state}'),
+        leading: Text('${medicalAppointment.turn}', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
         onTap: () {
           setState(() {
             _pageSelected = MedicalAppointmentProfilePage(medicalAppointment);

@@ -136,6 +136,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
               setState(() {
                 DoctorForm().submitForm(context);
                 _pageSelected = _buildDoctorsContainer();
+                doctorBloc.sendDoctorEvent.add(SearchAllDoctors());
               });
             },
           ),
