@@ -22,7 +22,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Medical App',
+      title: 'Servicios Medicos',
       theme: ThemeData(
         primarySwatch: MaterialColor(0xFF82B1FF, color),
         visualDensity: VisualDensity.adaptivePlatformDensity,

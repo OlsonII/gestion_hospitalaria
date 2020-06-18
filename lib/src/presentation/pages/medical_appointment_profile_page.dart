@@ -1,9 +1,13 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gestion_hospitalaria/src/application/bloc/medical_appointment/medical_appointment_bloc.dart';
 import 'package:gestion_hospitalaria/src/application/bloc/medical_appointment/medical_appointment_event.dart';
 import 'package:gestion_hospitalaria/src/application/bloc/medical_appointment/medical_appointment_state.dart';
 import 'package:gestion_hospitalaria/src/domain/entities/medical_appointment.dart';
+import 'package:gestion_hospitalaria/src/domain/entities/medicine.dart';
+import 'package:gestion_hospitalaria/src/domain/entities/prescription.dart';
 import 'package:gestion_hospitalaria/src/infrastructure/utils/global_date.dart';
 
 import 'home_page.dart';
@@ -35,6 +39,15 @@ class _MedicalAppointmentProfilePageState extends State<MedicalAppointmentProfil
     _screenWidth = _screenSize.width;
     _screenHeight = _screenSize.height;
     _screenWidth < 700 ? _screenLow = true : _screenLow = false;
+
+    if(widget._medicalAppointment.prescription == null){
+      widget._medicalAppointment.prescription = new Prescription();
+      widget._medicalAppointment.prescription.creationDate = DateTime.now();
+      widget._medicalAppointment.prescription.expirationDate = DateTime.now().add(Duration(days: 15));
+      widget._medicalAppointment.prescription.state = 'Facturada';
+      widget._medicalAppointment.prescription.medicines = new List();
+    }
+
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 20.0),
@@ -116,7 +129,7 @@ class _MedicalAppointmentProfilePageState extends State<MedicalAppointmentProfil
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(_standartRadius),
-          color: widget._medicalAppointment.state != 'Cancelada' ?
+          color: widget._medicalAppointment.state != 'Cancelada' && widget._medicalAppointment.state != 'Completada' ?
           Color.fromRGBO(251, 139, 142, 1) : Colors.grey
       ),
       child: FlatButton(
@@ -124,7 +137,7 @@ class _MedicalAppointmentProfilePageState extends State<MedicalAppointmentProfil
             style: TextStyle(fontSize: 15.0, color: Colors.white)) :
         FaIcon(FontAwesomeIcons.ban, color: Colors.white),
         onPressed: (){
-          widget._medicalAppointment.state != 'Cancelada' ?
+          widget._medicalAppointment.state != 'Cancelada' && widget._medicalAppointment.state != 'Completada' ?
           actionInfoDialog(context, 'Cancelar') : (){};
         },
       ),
@@ -135,7 +148,7 @@ class _MedicalAppointmentProfilePageState extends State<MedicalAppointmentProfil
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(_standartRadius),
-          color: widget._medicalAppointment.state != 'Cancelada' ?
+          color: widget._medicalAppointment.state != 'Cancelada' && widget._medicalAppointment.state != 'Completada' ?
           Color.fromRGBO(255, 188, 132, 1) : Colors.grey
       ),
       child: FlatButton(
@@ -143,7 +156,7 @@ class _MedicalAppointmentProfilePageState extends State<MedicalAppointmentProfil
             style: TextStyle(fontSize: 15.0, color: Colors.white)) :
         FaIcon(FontAwesomeIcons.solidClock, color: Colors.white),
         onPressed: (){
-          widget._medicalAppointment.state != 'Cancelada' ?
+          widget._medicalAppointment.state != 'Cancelada' && widget._medicalAppointment.state != 'Completada' ?
           (){} : (){};
         },
       ),
@@ -154,7 +167,7 @@ class _MedicalAppointmentProfilePageState extends State<MedicalAppointmentProfil
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(_standartRadius),
-          color: widget._medicalAppointment.state != 'Cancelada' ?
+          color: widget._medicalAppointment.state != 'Cancelada' && widget._medicalAppointment.state != 'Completada' ?
           Color.fromRGBO(171, 208, 188, 1) : Colors.grey
       ),
       child: FlatButton(
@@ -162,8 +175,9 @@ class _MedicalAppointmentProfilePageState extends State<MedicalAppointmentProfil
             style: TextStyle(fontSize: 15.0, color: Colors.white)) :
         FaIcon(FontAwesomeIcons.check, color: Colors.white),
         onPressed: (){
-          widget._medicalAppointment.state != 'Cancelada' ?
-              (){} : (){};
+          widget._medicalAppointment.state != 'Cancelada' && widget._medicalAppointment.state != 'Completada' ?
+            actionInfoDialog(context, 'Completar')
+              : (){};
         },
       ),
     );
@@ -174,10 +188,22 @@ class _MedicalAppointmentProfilePageState extends State<MedicalAppointmentProfil
         child: Container(
           child: DataTable(
               columns: [new DataColumn(label: Text('Medicamento', style: TextStyle(fontWeight: FontWeight.bold))), new DataColumn(label: Text('Cantidad', style: TextStyle(fontWeight: FontWeight.bold)))],
-              rows: [/*new DataRow(cells: [DataCell(Text('null')), DataCell(Text('null'))])*/]
+              rows: mapRowsToTable()
           ),
         )
     );
+  }
+
+  mapRowsToTable(){
+    if(widget._medicalAppointment.prescription.medicines == null)
+      return [];
+
+    List<DataRow> rows = new List();
+    widget._medicalAppointment.prescription.medicines.forEach((element) {
+      rows.add(new DataRow(cells: [DataCell(Text('${element.name}')), DataCell(Text('${element.quantity}'))]));
+    });
+
+    return rows;
   }
 
   actionInfoDialog(BuildContext context, String action){
@@ -199,12 +225,16 @@ class _MedicalAppointmentProfilePageState extends State<MedicalAppointmentProfil
                   switch(action){
                     case 'Cancelar':
                       setState(() {
-                        widget._medicalAppointment.state = 'Cancelada';
                         medicalAppointmentBloc.sendMedicalAppointmentEvent.add(CancelMedicalAppointmentEvent(medicalAppointment: widget._medicalAppointment));
+                        if(_showResponse('cancelada'))
+                          widget._medicalAppointment.state = 'Cancelada';
                       });
                       break;
+                    case 'Completar':
+                      medicalAppointmentBloc.sendMedicalAppointmentEvent.add(CompleteMedicalAppointmentEvent(medicalAppointment: widget._medicalAppointment));
+                      _showResponse(action);
+                      break;
                   }
-                  _showResponse(action);
                 },
               )
             ],
@@ -217,16 +247,24 @@ class _MedicalAppointmentProfilePageState extends State<MedicalAppointmentProfil
     medicalAppointmentBloc.medicalAppointmentStream.forEach((element) {
       if(element is MedicalAppointmentRegistered){
         if(element.response == 'Cita medica $action satisfactoriamente'){
-          _registeredMedicalAppointmentDialog(HomePage.scaffoldKey.currentContext, element.response);
+          _registeredMedicalAppointmentDialog(context, element.response);
           return true;
         }
-        _registeredMedicalAppointmentDialog(HomePage.scaffoldKey.currentContext, element.response);
+        _registeredMedicalAppointmentDialog(context, element.response);
       }
       return false;
     });
   }
 
   _registeredMedicalAppointmentDialog(BuildContext context, response){
+
+    if(response == 'Cita medica completada satisfactoriamente'){
+      setState(() {
+        widget._medicalAppointment.state = 'completada';
+      });
+    }
+
+
     showDialog(
         context: context,
         builder: (BuildContext context){
@@ -245,19 +283,77 @@ class _MedicalAppointmentProfilePageState extends State<MedicalAppointmentProfil
   }
 
   Container _buildAddMedicineButton() {
+    Medicine medicine = new Medicine();
     return Container(
       width: _screenWidth*0.05,
       height: _screenHeight*0.05,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(_standartRadius),
-          color: widget._medicalAppointment.state != 'Cancelada' ?
+          color: widget._medicalAppointment.state != 'Cancelada' && widget._medicalAppointment.state != 'Completada' ?
           Color.fromRGBO(171, 208, 188, 1) : Colors.grey
       ),
       child: FlatButton(
         child: FaIcon(FontAwesomeIcons.plus, color: Colors.white, size: 15.0,),
         onPressed: (){
-          widget._medicalAppointment.state != 'Cancelada' ?
-              (){} : (){};
+          widget._medicalAppointment.state != 'Cancelada' && widget._medicalAppointment.state != 'Completada' ?
+          showDialog(
+              context: context,
+              builder: (BuildContext context){
+                return AlertDialog(
+                  title: Text('Registrar Medicina'),
+                  content: Row(
+                    children: [
+                      SizedBox(
+                        width: _screenWidth*0.2,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            icon: FaIcon(FontAwesomeIcons.capsules),
+                            labelText: 'Medicamento*',
+                            hintText: 'Ingrese nombre del medicamento aqui',
+                          ),
+                          onChanged: (value){
+                            medicine.name = value;
+                          },
+                        ),
+                      ),
+                      SizedBox(width: _screenWidth*0.05,),
+                      SizedBox(
+                        width: _screenWidth*0.2,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            icon: FaIcon(FontAwesomeIcons.sortNumericDown),
+                            labelText: 'Cantidad*',
+                            hintText: 'Ingrese la cantidad del medicamento aqui',
+                          ),
+                          onChanged: (value){
+                            medicine.quantity = int.parse(value);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    FlatButton(
+                      child: Text('Cancelar'),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    FlatButton(
+                      child: Text('Registrar'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        setState(() {
+                          widget._medicalAppointment.prescription.medicines.add(medicine);
+                        });
+                      },
+                    )
+                  ],
+                );
+              }
+          ) : (){};
         },
       ),
     );

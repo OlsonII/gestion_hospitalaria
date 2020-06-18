@@ -155,9 +155,28 @@ class _MedicalAppointmentFormState extends State<MedicalAppointmentForm> {
                 child: Text('Registrar'),
                 onPressed: (){
                   medicalAppointment.date = globalDate.dateSelected;
-                  medicalAppointmentBloc.sendMedicalAppointmentEvent.add(RegisterMedicalAppointmentEvent(medicalAppointment: medicalAppointment));
-                  Navigator.of(context).pop();
-                  _showResponse();
+                  if(_validateDate(medicalAppointment.date)){
+                    medicalAppointmentBloc.sendMedicalAppointmentEvent.add(RegisterMedicalAppointmentEvent(medicalAppointment: medicalAppointment));
+                    Navigator.of(context).pop();
+                    _showResponse(context);
+                  }else{
+                    Navigator.of(context).pop();
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context){
+                          return AlertDialog(
+                            title: Text('Verificar fecha', style: TextStyle(fontWeight: FontWeight.bold),),
+                            content: Text('Por favor ingrese una fecha valida'),
+                            actions: [
+                              FlatButton(
+                                child: Text('Cerrar'),
+                                onPressed: () => Navigator.of(context).pop(),
+                              )
+                            ],
+                          );
+                        }
+                    );
+                  }
                 },
               )
             ],
@@ -166,15 +185,15 @@ class _MedicalAppointmentFormState extends State<MedicalAppointmentForm> {
     );
   }
 
-  _showResponse(){
+  _showResponse(BuildContext context){
     medicalAppointmentBloc.medicalAppointmentStream.forEach((element) {
       if(element is MedicalAppointmentRegistered){
         if(element.response == 'Cita medica creada satisfactoriamente'){
           MedicalAppointmentForm.formMedicalAppointmentKey.currentState.reset();
-          _registeredMedicalAppointmentDialog(HomePage.scaffoldKey.currentContext, element.response);
+          _registeredMedicalAppointmentDialog(context/*HomePage.scaffoldKey.currentContext*/, element.response);
           return true;
         }
-        _registeredMedicalAppointmentDialog(HomePage.scaffoldKey.currentContext, element.response);
+        _registeredMedicalAppointmentDialog(context/*HomePage.scaffoldKey.currentContext*/, element.response);
       }
       return false;
     });
@@ -183,7 +202,7 @@ class _MedicalAppointmentFormState extends State<MedicalAppointmentForm> {
   _registeredMedicalAppointmentDialog(BuildContext context, response){
     showDialog(
         context: context,
-        builder: (BuildContext context){
+        builder: (context){
           return AlertDialog(
             title: Text('Respuesta', style: TextStyle(fontWeight: FontWeight.bold),),
             content: Text('$response'),
@@ -275,7 +294,7 @@ class _MedicalAppointmentFormState extends State<MedicalAppointmentForm> {
             fillColor: Colors.white,
             icon: FaIcon(FontAwesomeIcons.solidUser),
             labelText: 'Paciente*',
-            hintText: 'Ingrese el nombre del paciente aqui',
+            hintText: 'Ingrese numero de identificacion del paciente aqui',
           ),
           keyboardType: TextInputType.text,
           validator: (value) => _validatePatientId(value),
@@ -310,6 +329,13 @@ class _MedicalAppointmentFormState extends State<MedicalAppointmentForm> {
     if(value.isEmpty){
       return 'Por favor, digite el numero de identificacion del paciente';
     }
+  }
+
+  _validateDate(DateTime date){
+    if(date.isBefore(DateTime.now().add(Duration(days: 1))))
+      return false;
+
+    return true;
   }
 
   _buildDoctorsDropdown() {

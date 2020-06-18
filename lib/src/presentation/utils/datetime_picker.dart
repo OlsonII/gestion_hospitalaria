@@ -9,7 +9,7 @@ class DateTimePicker extends StatefulWidget {
 
 class _DateTimePickerState extends State<DateTimePicker> {
 
-  DateTime dateSelected = DateTime.now();
+  DateTime dateSelected = DateTime.now().add(Duration(days: 1));
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +25,8 @@ class _DateTimePickerState extends State<DateTimePicker> {
           onPressed: (){
             showDatePicker(
                 context: HomePage.scaffoldKey.currentContext,
-                initialDate: DateTime.now(),
-                firstDate: DateTime(DateTime.now().year - 3),
+                initialDate: DateTime.now().add(Duration(days: 1)),
+                firstDate: DateTime(DateTime.now().year - 1),
                 lastDate: DateTime(DateTime.now().year + 1)
             ).then((date){
               if(date != null){

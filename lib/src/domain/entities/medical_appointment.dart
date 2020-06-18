@@ -49,7 +49,7 @@ class MedicalAppointment implements IMedicalService{
     turn: json["turn"],
     state: json["state"],
     cost: json["cost"],
-    prescription: json["prescription"],
+//    prescription: Prescription.fromJson(json["Prescription"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -61,10 +61,14 @@ class MedicalAppointment implements IMedicalService{
       "id": patient.identification
     },
     "date": date.toIso8601String(),
-//    "hour": hour,
-//    "prescription": prescription.toJson()
+    "prescription": prescription.toJson()
   };
 
-
+  Map<String, dynamic> complete(){
+    return {
+      "identification": this.id == null ? 0 : this.id,
+      "prescription": prescription.toJson()
+    };
+  }
 
 }

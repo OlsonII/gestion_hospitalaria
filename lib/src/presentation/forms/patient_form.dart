@@ -117,7 +117,7 @@ class _PatientFormState extends State<PatientForm> {
                 onPressed: (){
                   patientBloc.sendPatientEvent.add(RegisterPatient(patient: PatientForm.patient));
                   Navigator.of(context).pop();
-                  _showResponse();
+                  _showResponse(context);
                 },
               )
             ],
@@ -126,12 +126,12 @@ class _PatientFormState extends State<PatientForm> {
     );
   }
 
-  _showResponse(){
+  _showResponse(BuildContext context){
     patientBloc.patientStream.forEach((element) {
       if(element is PatientRegistered){
         if(element.response == 'Paciente registrado satisfactoriamente'){
           PatientForm.formDoctorKey.currentState.reset();
-          _registeredDoctorDialog(HomePage.scaffoldKey.currentContext, element.response);
+          _registeredDoctorDialog(context, element.response);
           return true;
         }
       }

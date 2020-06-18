@@ -190,7 +190,7 @@ class _DoctorsPageState extends State<DoctorsPage> {
         subtitle: Text('${doctor.degree} - ${doctor.workday}'),
         onTap: (){
           setState(() {
-            _pageSelected = DoctorProfilePage();
+            _pageSelected = DoctorProfilePage(doctor);
           });
         },
       ),

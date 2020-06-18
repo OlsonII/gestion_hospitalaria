@@ -70,4 +70,17 @@ class MedicalAppointmentRepository {
       return 'Error';
     }
   }
+
+  Future<String> completeMedicalAppointment(MedicalAppointment medicalAppointment) async {
+    try{
+      var response = await http.put(_URL+'/Complete',
+          headers: {'content-type': 'application/json'},
+          body: jsonEncode(medicalAppointment.complete()));
+      return jsonDecode(response.body)['mensaje'];
+
+    }catch(e){
+      print('error: ${e.toString()}');
+      return 'Error';
+    }
+  }
 }

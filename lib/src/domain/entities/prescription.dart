@@ -8,8 +8,8 @@ String prescriptionToJson(Prescription data) => json.encode(data.toJson());
 
 class Prescription {
   String id;
-  String creationDate;
-  String expirationDate;
+  DateTime creationDate;
+  DateTime expirationDate;
   List<Medicine> medicines;
   String state;
 
@@ -21,18 +21,36 @@ class Prescription {
     this.state,
   });
 
-  factory Prescription.fromJson(Map<String, dynamic> json) => Prescription(
-    id: json["id"],
-    creationDate: json["creation_date"],
-    expirationDate: json["expiration_date"],
-    medicines: List<Medicine>.from(json["medicines"].map((x) => Medicine.fromJson(x))),
-    state: json["state"],
-  );
+  factory Prescription.fromJson(Map<String, dynamic> json) {
+
+    List<Medicine> medicinesList;
+
+    var list = json['medicines'] as List;
+    list != null ? medicinesList = list.map((medicine) => Medicine.fromJson(new Map<String, dynamic>.from(medicine))).toList() : medicinesList = [];
+
+      return  Prescription(
+          id: json["id"],
+          creationDate: DateTime.parse(json["creation_date"]),
+          expirationDate: DateTime.parse(json["expiration_date"]),
+          medicines: medicinesList,
+          state: json["state"],
+        );
+  }
 
   Map<String, dynamic> toJson() => {
-    "creation_date": creationDate,
-    "expiration_date": expirationDate,
-    "medicines": List<dynamic>.from(medicines.map((x) => x.toJson())),
+    "creation_date": creationDate.toIso8601String(),
+    "expiration_date": expirationDate.toIso8601String(),
+    "medicines": mapMecinesToJson(),
     "state": state,
   };
+
+  mapMecinesToJson(){
+
+    var medicinesList = new List();
+    medicines.forEach((element) {
+      medicinesList.add(element.toJson());
+    });
+    return medicinesList != null ? medicinesList : medicinesList = [];
+
+  }
 }

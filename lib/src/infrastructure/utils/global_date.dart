@@ -5,7 +5,7 @@ class GlobalDate {
   DateTime _dateSelected;
 
   GlobalDate() {
-    _dateSelected = DateTime.now();
+    _dateSelected = DateTime.now().add(Duration(days: 1));
   }
 
   DateTime get dateSelected => _dateSelected;

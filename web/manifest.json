@@ -1,6 +1,6 @@
 {
-    "name": "gestion_hospitalaria",
-    "short_name": "gestion_hospitalaria",
+    "name": "Servicios Medicos",
+    "short_name": "Servicios Medicos",
     "start_url": ".",
     "display": "minimal-ui",
     "background_color": "#0175C2",

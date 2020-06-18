@@ -6,6 +6,7 @@ import 'package:gestion_hospitalaria/src/domain/entities/medical_appointment.dar
 import 'package:gestion_hospitalaria/src/infrastructure/utils/global_date.dart';
 import 'package:gestion_hospitalaria/src/presentation/forms/medical_appointment_form.dart';
 import 'package:gestion_hospitalaria/src/presentation/loaders/color_progress_indicator.dart';
+import 'package:gestion_hospitalaria/src/presentation/pages/home_page.dart';
 import 'package:intl/intl.dart';
 
 import 'medical_appointment_profile_page.dart';
